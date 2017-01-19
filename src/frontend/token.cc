@@ -1,7 +1,7 @@
 //
 // Created by austindevx on 1/7/17.
 //
-#include "Token.h"
+#include "token.h"
 
 namespace frontend{
 

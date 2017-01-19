@@ -8,10 +8,9 @@
 #include <ctype.h>
 #include <iostream> // for testing please remove
 
-#include "Source.h"
-#include "Token.h"
-#include "WordToken.h"
-#include "EofToken.h"
+#include "source.h"
+#include "token.h"
+#include "word_token.h"
 
 namespace frontend {
 
@@ -52,11 +51,7 @@ namespace frontend {
       Token* token = nullptr;
       char currentCharacter = getCurrentCharacter();
 
-      if(currentCharacter == source->S_EOF) {
-        token = new EofToken(source);
-      }else if(WordToken::isValidWordCharacter(currentCharacter)) {
-        token = new WordToken(source);
-      }
+//
 
       return token;
     }

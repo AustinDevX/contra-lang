@@ -1,7 +1,6 @@
 //
 // Created by austindevx on 1/6/17.
 //
-
 #ifndef CONTRA_LANG_WORDTOKEN_H
 #define CONTRA_LANG_WORDTOKEN_H
 
@@ -9,7 +8,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Token.h"
+#include "token.h"
 
 namespace frontend {
   /**
@@ -21,12 +20,9 @@ namespace frontend {
   public:
     /**
      * @Constructor
-     *
      * @param source The source from which the token was extracted
      */
-    explicit WordToken(frontend::Source* source) : Token { source } {
-      extract();
-    };
+    explicit WordToken(frontend::Source* source);
 
     /**
      * Extract a valid word token from the source
@@ -38,32 +34,9 @@ namespace frontend {
      *
      * @param   c       The character to be checked
      * @return  bool    Whether the character is a valid token
-     *
      */
     static bool isValidWordCharacter(char c);
   };
-
-  void WordToken::extract() {
-    std::string text;
-    char current = getCurrentCharacter();
-
-    while(isValidWordCharacter(current)) {
-      text.push_back(current);
-      current = getNextCharacter();
-    }
-
-    this->text = text;
-
-    try {
-      type = KEYWORDS.at(text);
-    } catch (std::out_of_range) {
-      type = IDENTIFIER;
-    }
-  }
-
-  bool WordToken::isValidWordCharacter(char c) {
-    return (isalnum(c) || c == '_');
-  }
 }
 
 

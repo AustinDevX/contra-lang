@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "Source.h"
+#include "source.h"
 
 namespace frontend {
   enum TokenType {
@@ -13,7 +13,6 @@ namespace frontend {
     NEWLINE = 1, SPACE, TAB, L_PAREN, R_PAREN, L_BRACE, R_BRACE, L_ANGLE_BRACKET, R_ANGLE_BRACKET,
     DOT, COMMA, STAR, DOT_DOT, PLUS, MINUS, SLASH, MOD, EQUALS, SEMICOLON, COLON, QUOTE, DOUBLE_SLASH, ARROW,
     L_BRACKET, R_BRACKET, BIT_AND, BIT_OR, BIT_NOT, BIT_XOR,
-
     // keywords
     DEF, RETURN, STRING_T, CHAR_T, I32_T, I64_T, U32_T, U64_T, F64_T, BOOL_T, IF, ELSE, ELIF, SWITCH, FOR, WHILE, IN, AND,
     PTR, ADDR, TRY, CATCH, FINALLY, GOTO, TRUE, FALSE,
