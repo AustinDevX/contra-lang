@@ -25,6 +25,11 @@ namespace frontend {
     explicit Scanner(Source* src) : source{src}, currentToken{nullptr} {};
 
     /**
+     * @destructor
+     */
+     virtual ~Scanner() { currentToken = nullptr; source = nullptr; }
+
+    /**
      * Return the last read token from the source
      *
      * @return Token*

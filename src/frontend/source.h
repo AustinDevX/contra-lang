@@ -73,19 +73,32 @@ namespace frontend {
      * Return the number of the line currently being read.
      * @return int
      */
-    int getCurrentLineNumber() { return currentLineNumber; };
+    inline int getCurrentLineNumber() const { return currentLineNumber; };
 
     /**
      * Return the current read position within the current line.
      * @return int
      */
-    int getCurrentPosition() { return currentPosition; };
+    inline int getCurrentPosition() const { return currentPosition; };
+
+    /**
+     * Return whether all character have been read from the source
+     * @return bool
+     */
+     inline bool exhausted() const {return isExhausted; }
+
+    /**
+     * Increment the read position by 1
+     */
+    inline void advanceReadPosition() { if(currentPosition < static_cast<int>(currentLine.length() + 2)) {currentPosition++;} }
 
   protected:
+
     std::istream *stream;       // The stream from which the source is being read
     std::string currentLine;    // The current source line
     int currentLineNumber;      // The current line number in the source
     int currentPosition;        // The current position in the current line
+    bool isExhausted;           // Indicates if all characters have been read from the source
   };
 }
 

@@ -18,6 +18,7 @@ Source::Source(std::istream *stream) : stream{ stream }{
   // read in the first line of the source. This will populate the currentLine member variable
   // without adjusting the current position.
   std::getline(*stream, currentLine);
+  isExhausted = false;
 };
 
 char Source::getCurrentCharacter() {
@@ -25,18 +26,34 @@ char Source::getCurrentCharacter() {
     return S_SOS;
   } else if(currentPosition == lineStart) {
     return getNextCharacter();
-  } else if(currentPosition == currentLine.length()) {
-    return stream->eof() ? S_EOS: S_EOL;
-  } else if(currentPosition > currentLine.length()) {
-    readLine();
-    return getNextCharacter();
-  } else {
+  } else if(currentPosition >= 0 && currentPosition < currentLine.length()) {
     return currentLine.at(currentPosition);
+  } else if(currentPosition == currentLine.length()) {
+    // if all characters in the current line have been consumed and the stream has no
+    // remaining characters to be read then the source is exhausted
+    if(stream->eof()) {
+      isExhausted = true;
+      return S_EOS;
+    } else {
+      return S_EOL;
+    }
+  } else { //current position > currentLine.length()
+    if(isExhausted) {
+      return S_EOS;
+    } else if(stream->eof()) {
+      // if the end of line character's position was skipped over using advanceReadPosition
+      // but the source has no more characters in its underlying stream return the end of source character
+      isExhausted = true;
+      return S_EOS;
+    } else {
+      readLine();
+      return getNextCharacter();
+    }
   }
 }
 
 char Source::getNextCharacter() {
-  currentPosition++;
+  advanceReadPosition();
   return getCurrentCharacter();
 }
 

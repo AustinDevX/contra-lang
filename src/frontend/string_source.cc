@@ -6,10 +6,6 @@
 
 using namespace frontend;
 
-StringSource::StringSource() : Source { new std::stringstream() } {}
+StringSource::StringSource() : Source { new std::istringstream() } {}
 
-StringSource::StringSource(std::string str) : Source { new std::istringstream(str) } {
-  if(!stream->fail()) {
-    readLine();
-  }
-}
+StringSource::StringSource(std::string str) : Source { new std::istringstream(str) } {}
