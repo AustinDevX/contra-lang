@@ -3,34 +3,34 @@
 
 #include <string>
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include "source.h"
 
 namespace frontend {
   enum TokenType {
     // symbols
-    NEWLINE = 1, SPACE, TAB, L_PAREN, R_PAREN, L_BRACE, R_BRACE, L_ANGLE_BRACKET, R_ANGLE_BRACKET,
-    DOT, COMMA, STAR, DOT_DOT, PLUS, MINUS, SLASH, MOD, EQUALS, SEMICOLON, COLON, QUOTE, DOUBLE_SLASH, ARROW,
-    L_BRACKET, R_BRACKET, BIT_AND, BIT_OR, BIT_NOT, BIT_XOR,
+    EOL = 1, L_PAREN, R_PAREN, L_BRACE, R_BRACE, L_ANGLE_BRACKET, R_ANGLE_BRACKET,
+    DOT, COMMA, STAR, PLUS, MINUS, SLASH, MOD, EQUALS, SEMICOLON, COLON, QUOTE, DOUBLE_SLASH, NOT_EQUALS,
+    L_BRACKET, R_BRACKET, BIT_AND, BIT_OR, BIT_NOT, BIT_XOR, LOGICAL_AND, LOGICAL_OR, LOGICAL_NOT,ASSIGNMENT,
     // keywords
     DEF, RETURN, STRING_T, CHAR_T, I32_T, I64_T, U32_T, U64_T, F64_T, BOOL_T, IF, ELSE, ELIF, SWITCH, FOR, WHILE, IN, AND,
     PTR, ADDR, TRY, CATCH, FINALLY, GOTO, TRUE, FALSE,
 
-    IDENTIFIER, INTEGER, FLOAT, BOOLEAN, END_OF_FILE,
+    IDENTIFIER, INTEGER, REAL, BOOLEAN, END_OF_FILE, ERROR,
   };
 
-  inline std::unordered_map<std::string, TokenType> createSymbolsMap() {
-    std::unordered_map<std::string, TokenType> symbols {{"\n", NEWLINE}, {" ", SPACE}, {"\t", TAB}, {"[", L_PAREN},
-      {"]", R_PAREN}, {"{", L_BRACE}, {"}", R_BRACE}, {"[", L_BRACKET}, {"]", R_BRACKET}, {"<", L_ANGLE_BRACKET},
-      {">", R_ANGLE_BRACKET}, {".", DOT}, {",", COMMA}, {"*", STAR}, {"..", DOT_DOT}, {"+", PLUS}, {"-", MINUS},
-      {"/", SLASH}, {"%", MOD}, {"=", EQUALS}, {";", SEMICOLON}, {":", COLON}, {"\"", QUOTE}, {"//", DOUBLE_SLASH},
-      {"->", ARROW}, {"&", BIT_AND}, {"|", BIT_OR}, {"~", BIT_NOT}, {"^", BIT_XOR}};
+  inline std::map<char const*, TokenType> createSymbolsMap() {
+    std::map<char*, TokenType> symbols {{"(", L_PAREN}, {")", R_PAREN}, {"{", L_BRACE}, {"}", R_BRACE},
+      {"[", L_BRACKET}, {"]", R_BRACKET}, {"<", L_ANGLE_BRACKET}, {"&&", LOGICAL_AND}, {"||", LOGICAL_OR}, {"!", LOGICAL_NOT},
+      {">", R_ANGLE_BRACKET}, {".", DOT}, {",", COMMA}, {"*", STAR}, {"+", PLUS}, {"-", MINUS},
+      {"/", SLASH}, {"%", MOD}, {"=", ASSIGNMENT}, {";", SEMICOLON}, {":", COLON}, {"\"", QUOTE}, {"//", DOUBLE_SLASH},
+      {"&", BIT_AND}, {"|", BIT_OR}, {"~", BIT_NOT}, {"^", BIT_XOR}, {"==", EQUALS}, {"!=", NOT_EQUALS}};
     return symbols;
   };
 
-  inline std::unordered_map<std::string, TokenType> createKeywordsMap() {
-    std::unordered_map<std::string, TokenType> keywords;
+  inline std::map<std::string, TokenType> createKeywordsMap() {
+    std::map<std::string, TokenType> keywords;
     keywords["def"] = DEF; keywords["return"] = RETURN; keywords["string"] = STRING_T; keywords["char"] = CHAR_T;
     keywords["i32"] =  I32_T; keywords["i64"] = I64_T; keywords["u32"] = U32_T; keywords["u64"] = U64_T;
     keywords["f64"] = F64_T; keywords["bool"] = BOOL_T; keywords["if"] = IF; keywords["else"] = ELSE; keywords["elif"] = ELIF;
@@ -42,14 +42,16 @@ namespace frontend {
 
   class Token {
     public:
-
-    static const std::unordered_map<std::string, TokenType> SYMBOLS;
-    static const std::unordered_map<std::string, TokenType> KEYWORDS;
+    // The special symbols defined by contra lang
+    static const std::map<char const*, TokenType> SYMBOLS;
+    // The keywords defined by contra lang
+    static const std::map<std::string, TokenType> KEYWORDS;
 
     /**
      * @Constructor
      *
-     * @param  source The source from where to fetch the token
+     * @param  source The source to extract the token from
+     *
      * @throws std::Exception
      */
     explicit Token(frontend::Source* source) : source{ source } {
@@ -58,11 +60,14 @@ namespace frontend {
     }
 
     /**
-     * Extract a one character token from the source
+     * Extract the token from the source
      *
-     * After extracting the token, the current source line postion will be one
-     * beyond that of the last token character.
-     * * @throws std::Exception */
+     * This base method extracts a single character from the source. All subclasses that implement this method
+     * after extracting the token must leave the current source line position one beyond that of the last character
+     * of the source.
+     *
+     * @throws std::Exception
+     **/
     virtual void extract() {
       text = std::string(1, getCurrentCharacter()); // fills string of len 1 w/ currentChar
       getNextCharacter();

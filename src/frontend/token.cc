@@ -6,5 +6,5 @@
 namespace frontend{
 
   const std::unordered_map<std::string, TokenType> Token::KEYWORDS = createKeywordsMap();
-  const std::unordered_map<std::string, TokenType> Token::SYMBOLS = createSymbolsMap();
+  const std::unordered_map<char*, TokenType> Token::SYMBOLS = createSymbolsMap();
 }

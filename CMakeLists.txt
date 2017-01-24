@@ -18,8 +18,15 @@ set(SOURCE_FILES
         test/frontend/source_test.cpp
         test/frontend/frontend_all_test.cpp
         test/frontend/scanner_test.cpp
-        test/frontend/word_token_test.cc.cpp
-        test/frontend/file_source_test.cc test/frontend/word_token_test.cc.cc test/frontend/string_source_test.cc src/frontend/StringToken.cc src/frontend/StringToken.h)
+        test/frontend/file_source_test.cc
+        test/frontend/word_token_test.cc
+        test/frontend/string_source_test.cc
+        src/frontend/string_token.cc
+        src/frontend/string_token.h
+        src/frontend/number_token.cc
+        src/frontend/number_token.h
+        src/frontend/special_symbol_token.cc
+        src/frontend/special_symbol_token.h src/frontend/exceptions.h)
 
 # requires google test 1.8.0+ which packages the gmock and gtest libraries together
 include_directories(
